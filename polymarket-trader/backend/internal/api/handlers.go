@@ -38,8 +38,8 @@ func (h *Handler) StartCopying(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"status": "monitoring", "trader": req.TraderAddress})
 }
 
-// GetPositions returns active positions (Mock for now)
+// GetPositions returns active positions
 func (h *Handler) GetPositions(c *fiber.Ctx) error {
-	// TODO: Fetch from DB
-	return c.JSON([]models.Position{})
+	positions := h.CopyEngine.GetActivePositions()
+	return c.JSON(positions)
 }
