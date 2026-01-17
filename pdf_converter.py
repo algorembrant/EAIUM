@@ -60,7 +60,7 @@ class MDHandler(FileSystemEventHandler):
             with open(file_path, 'r', encoding='utf-8') as f:
                 text = f.read()
             
-            html = markdown.markdown(text)
+            html = markdown.markdown(text, extensions=['tables'])
             
             css = """
             <style>
@@ -69,6 +69,22 @@ class MDHandler(FileSystemEventHandler):
                 p { line-height: 1.5; }
                 code { background-color: #f4f4f4; padding: 2px 5px; border-radius: 3px; }
                 pre { background-color: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto;}
+                
+                /* Table Styles */
+                table {
+                    border-collapse: collapse;
+                    width: 100%;
+                    margin-bottom: 1em;
+                }
+                th, td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #f2f2f2;
+                    font-weight: bold;
+                }
             </style>
             """
             
