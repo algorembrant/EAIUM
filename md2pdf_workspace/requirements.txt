@@ -1,0 +1,4 @@
+markdown
+weasyprint
+watchdog
+beautifulsoup4
