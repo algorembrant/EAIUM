@@ -97,18 +97,15 @@ class MDHandler(FileSystemEventHandler):
                 
                 /* Table Styles */
                 table {
-                    border-collapse: collapse;
+                    border: 1px solid #ddd;
                     width: 100%;
                     margin-bottom: 1em;
-                    table-layout: fixed; /* helps with column width distribution */
                 }
                 th, td {
                     border: 1px solid #ddd;
                     padding: 8px;
                     text-align: left;
                     vertical-align: top;
-                    word-wrap: break-word; /* Ensure content stays in cell */
-                    line-height: 1.5; /* "0.5 line spacing" -> 1.5 value */
                 }
                 th {
                     background-color: #f8f9fa;
