@@ -1,9 +1,7 @@
 package polymarket
 
 import (
-	"encoding/json"
 	"log"
-	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -56,7 +54,7 @@ type SubscriptionMsg struct {
 
 func (w *WSClient) Subscribe(assetIDs []string) error {
 	msg := SubscriptionMsg{
-		Type:    "Market", // Example type
+		Type:    "Market",       // Example type
 		Channel: "price_change", // Example channel
 		Assets:  assetIDs,
 	}
