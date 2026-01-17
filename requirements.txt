@@ -1,3 +1,0 @@
-watchdog
-markdown
-xhtml2pdf
