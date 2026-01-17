@@ -27,6 +27,7 @@ func (s *TraderDiscoveryService) FetchTopTraders() ([]models.Trader, error) {
 	mockTraders := []models.Trader{
 		{
 			Address:     "0x9f8...7b2",
+			Category:    "Politics",
 			WinRate:     0.78,
 			TotalPnL:    12500.50,
 			TradeCount:  142,
@@ -35,6 +36,7 @@ func (s *TraderDiscoveryService) FetchTopTraders() ([]models.Trader, error) {
 		},
 		{
 			Address:     "0xa12...8c9",
+			Category:    "Crypto",
 			WinRate:     0.65,
 			TotalPnL:    8900.20,
 			TradeCount:  98,
@@ -43,6 +45,7 @@ func (s *TraderDiscoveryService) FetchTopTraders() ([]models.Trader, error) {
 		},
 		{
 			Address:     "0xb34...1d4",
+			Category:    "Sports",
 			WinRate:     0.92,
 			TotalPnL:    45000.00,
 			TradeCount:  310,

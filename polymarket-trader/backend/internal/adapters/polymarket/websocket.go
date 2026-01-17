@@ -1,6 +1,7 @@
 package polymarket
 
 import (
+	"encoding/json"
 	"log"
 
 	"github.com/gorilla/websocket"
@@ -9,15 +10,22 @@ import (
 const WSURL = "wss://ws-subscriptions-clob.polymarket.com/ws/market"
 
 type WSClient struct {
-	Conn    *websocket.Conn
-	MsgChan chan []byte
-	Done    chan struct{}
+	Conn            *websocket.Conn
+	MsgChan         chan []byte
+	PriceUpdateChan chan PriceUpdate
+	Done            chan struct{}
+}
+
+type PriceUpdate struct {
+	MarketID string
+	Price    float64
 }
 
 func NewWSClient() *WSClient {
 	return &WSClient{
-		MsgChan: make(chan []byte, 100),
-		Done:    make(chan struct{}),
+		MsgChan:         make(chan []byte, 100),
+		PriceUpdateChan: make(chan PriceUpdate, 100),
+		Done:            make(chan struct{}),
 	}
 }
 
@@ -41,7 +49,27 @@ func (w *WSClient) readLoop() {
 			log.Println("ws read error:", err)
 			return
 		}
-		// In a real app, process specific event types here
+
+		// Parse message (Simplified for demo)
+		// We optimistically try to parse as a price update
+		// In a real app, we'd check event type first
+		var update struct {
+			Type   string  `json:"event_type"`
+			Market string  `json:"asset_id"`
+			Price  float64 `json:"price"` // Assuming normalized price
+			// CLOB messages are more complex (Orders, Trades, etc.)
+			// We'll treat this as a generic update container for now
+		}
+
+		if err := json.Unmarshal(message, &update); err == nil {
+			if update.Market != "" && update.Price > 0 {
+				w.PriceUpdateChan <- PriceUpdate{
+					MarketID: update.Market,
+					Price:    update.Price,
+				}
+			}
+		}
+
 		w.MsgChan <- message
 	}
 }

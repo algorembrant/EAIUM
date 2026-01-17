@@ -6,6 +6,7 @@ import (
 
 type Trader struct {
 	Address     string  `json:"address" gorm:"primaryKey"`
+	Category    string  `json:"category"`
 	WinRate     float64 `json:"win_rate"`
 	TotalPnL    float64 `json:"total_pnl"`
 	TradeCount  int     `json:"trade_count"`
@@ -37,4 +38,15 @@ type CopyConfig struct {
 	MaxPosition   float64 `json:"max_position"`
 	StopLossPct   float64 `json:"stop_loss_pct"`
 	TakeProfitPct float64 `json:"take_profit_pct"`
+}
+
+type HistoricalTrade struct {
+	ID            uint    `json:"id" gorm:"primaryKey"`
+	TraderAddress string  `json:"trader_address" gorm:"index"`
+	MarketID      string  `json:"market_id"`
+	Side          string  `json:"side"` // BUY/SELL
+	Price         float64 `json:"price"`
+	Size          float64 `json:"size"`
+	PnL           float64 `json:"pnl"` // Realized PnL
+	Timestamp     time.Time
 }

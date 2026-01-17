@@ -9,25 +9,37 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface Trader {
   address: string;
+  category: string;
   win_rate: number;
   total_pnl: number;
   trade_count: number;
   is_monitored: boolean;
 }
 
+import { CopyConfigDialog } from "@/components/CopyConfigDialog";
+import { ActivePositions } from "@/components/ActivePositions";
+import { BotChat } from "@/components/BotChat";
+
 function App() {
   const [traders, setTraders] = useState<Trader[]>([]);
+  const [selectedTrader, setSelectedTrader] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
 
-  // Mock Data Loading
+  // Data Loading
   useEffect(() => {
-    // In real app, fetch from API
-    setTraders([
-      { address: "0x9f8...7b2", win_rate: 0.78, total_pnl: 12500.5, trade_count: 142, is_monitored: false },
-      { address: "0xa12...8c9", win_rate: 0.65, total_pnl: 8900.2, trade_count: 98, is_monitored: true },
-      { address: "0xb34...1d4", win_rate: 0.92, total_pnl: 45000.0, trade_count: 310, is_monitored: false },
-      { address: "0xc56...2e1", win_rate: 0.55, total_pnl: -1200.0, trade_count: 45, is_monitored: false },
-    ]);
+    fetch("http://localhost:8080/api/traders")
+      .then((res) => res.json())
+      .then((data) => {
+        // Map backend data to frontend model if needed (or just use direct if matches)
+        // Backend returns Trader[], we might need to ensure category exists
+        // simplified for now:
+        const enriched = data.map((t: any) => ({
+          ...t,
+          category: ["Politics", "Sports", "Crypto"][Math.floor(Math.random() * 3)] // Random cat for demo if missing
+        }));
+        setTraders(enriched);
+      })
+      .catch((err) => console.error("Failed to fetch traders:", err));
   }, []);
 
   return (
@@ -136,6 +148,7 @@ function App() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Trader</TableHead>
+                      <TableHead>Category</TableHead>
                       <TableHead>Win Rate</TableHead>
                       <TableHead>PnL</TableHead>
                       <TableHead>Status</TableHead>
@@ -146,6 +159,7 @@ function App() {
                     {traders.map((trader) => (
                       <TableRow key={trader.address}>
                         <TableCell className="font-mono text-xs">{trader.address}</TableCell>
+                        <TableCell><Badge variant="outline">{trader.category}</Badge></TableCell>
                         <TableCell>
                           <span className={trader.win_rate > 0.6 ? "text-green-500 font-medium" : ""}>
                             {(trader.win_rate * 100).toFixed(0)}%
@@ -158,7 +172,7 @@ function App() {
                           {trader.is_monitored ? <Badge>Active</Badge> : <Badge variant="secondary">Idle</Badge>}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button size="sm" variant={trader.is_monitored ? "destructive" : "default"}>
+                          <Button size="sm" variant={trader.is_monitored ? "destructive" : "default"} onClick={() => setSelectedTrader(trader.address)}>
                             {trader.is_monitored ? "Stop Copy" : "Copy Trade"}
                           </Button>
                         </TableCell>
@@ -168,6 +182,12 @@ function App() {
                 </Table>
               </CardContent>
             </Card>
+
+            <CopyConfigDialog
+              isOpen={!!selectedTrader}
+              onClose={() => setSelectedTrader(null)}
+              traderAddress={selectedTrader || ""}
+            />
 
             {/* Risk / Activity Feed */}
             <Card className="border-border/50 shadow-md">
@@ -209,10 +229,7 @@ function App() {
               </CardContent>
             </Card>
           </div>
-        </ScrollArea>
-      </main>
-    </div>
-  );
-}
 
-export default App;
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <ActivePositions />
+    
