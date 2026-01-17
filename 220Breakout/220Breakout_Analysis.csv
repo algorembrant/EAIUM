@@ -1,0 +1,24 @@
+Category,Item,Value,Description
+General Info,Version,1.10,EA Version
+General Info,Copyright,algorembrant,Author/Copyright Holder
+General Info,Link,https://www.mql5.com,Website Link
+Input (Risk),InpRiskPercent,1.0,Risk per trade (% of Balance)
+Input (Risk),InpRewardRatio,10,Reward Ratio (TP = 10 * Risk)
+Input (Time),InpRangeStartHour,22,Range Start Hour (UTC equivalent)
+Input (Time),InpRangeEndHour,0,Range End Hour (0 = Midnight)
+Input (Time),InpBrokerOffset,0,Broker Time Offset from UTC
+Input (Visuals),InpDrawRange,true,Draw Range Box on Chart
+Input (Visuals),InpBoxColor,clrLavender,Color of the Range Box
+Input (System),InpMagicNum,123456,Magic Number
+Strategy Logic,Timeframe,M3,Hardcoded to 3-Minute Chart Period
+Strategy Logic,Range Calculation,2 Hours,Duration before End Hour (Yesterday 22:00 to Today 00:00 default)
+Strategy Logic,Entry Rule (Buy),Close > HHR,Candle Close above Highest High of Range
+Strategy Logic,Entry Rule (Sell),Close < LLR,Candle Close below Lowest Low of Range
+Strategy Logic,Confirmation,Candle Close,Must wait for M3 candle to close to confirm signal
+Strategy Logic,Filter,IsPathClear,Checks if price touched the level between Range point and Breakout point
+Strategy Logic,Trade Limit,1 per day,Stops trading after one execution (win or loss)
+Strategy Logic,Reset Condition,New Day,Resets daily flags and range validity on new server day
+Risk Management,Stop Loss,Candle Low/High,Low of signal candle (Buy) or High (Sell)
+Risk Management,Take Profit,Risk * RewardRatio,Calculated distance added to/subtracted from entry
+Risk Management,Lot Calculation,% Risk of Balance,Dynamic lot size based on account balance and SL distance
+Risk Management,Order Comments,Range Breakout Buy/Sell,Comments attached to orders
